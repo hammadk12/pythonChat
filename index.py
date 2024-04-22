@@ -22,6 +22,6 @@ def main():
             print(random_response)
 
 
-if __name__ == __name__:
-    main()
+# if __name__ == __name__:
+    # main()
 
