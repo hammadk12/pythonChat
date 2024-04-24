@@ -1,11 +1,7 @@
 import re
 
 # original contacts list
-contacts = [
-    {"name": "Hammad", "location": "FL", "age": "19"},
-    {"name": "Thalia", "location": "OH", "age": "20"},
-    {"name": "Salwa", "location": "NJ", "age": "21"}
-    ]
+contacts = []
 
 # returns contact name if it matches contact list
 def get_matched_name(contacts, name_input):
@@ -48,6 +44,7 @@ def delete_contact(contacts):
                 
     else:
         print("No contact found with that name.")
+        delete_contact(contacts)
 
 # displays start menu
 def display_menu():
