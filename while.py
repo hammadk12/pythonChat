@@ -6,12 +6,6 @@ root = tk.Tk()
 root.title("Contacts")
 root.geometry("500x300")
 
-text_widget = tk.Text(root, height=5, width=50)
-text_widget.pack(pady=20)
-
-text_widget.insert(tk.END, "This is contact list widget. \nYou can edit your contact list as you wish.")
-
-
 # original contacts list
 contacts = []
 
@@ -20,12 +14,20 @@ def get_matched_name(contacts, name_input):
     return [contact for contact in contacts if re.search(f"^{name_input}$", contact['name'], re.IGNORECASE)]
 
 # displays contact information
-def display_contacts(contacts):
+def display_contacts():
+    contacts_display.delete("1.0", tk.END) # Clear existing content
     if contacts:
         for contact in contacts:
-            print(contact['name'], contact['location'], contact['age'], sep=", ")   
+            contacts_display.insert(tk.END, f"{contact['name']}, {contact['location']}, {contact['age']}\n")   
     else:
-        print("No contacts")
+        contacts_display.insert(tk.END, "No contacts yet.")
+
+# Creating a Text widget to display contacts
+contacts_display = tk.Text(root, height=10, width=50)
+contacts_display.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
+
+# Initial message in contacts display
+contacts_display.insert(tk.END, "No contacts yet.")
 
 # prompts user to enter contact name
 def get_contact_name():
@@ -60,7 +62,7 @@ def delete_contact(contacts):
 
 # Button to delete contact
 delete_button = tk.Button(root, text="Delete Contact", command=delete_contact, state=tk.DISABLED)
-delete_button.pack(pady=10)
+
 
 # displays start menu
 def display_menu():
@@ -82,32 +84,74 @@ def get_valid_location(prompt, pattern):
 
 
 # add contact function
-def add_contact(contacts):
-    name = input("Name: ")
-    location = get_valid_location("Location: ", r"^[A-Za-z ]+$")
-    age = input("Age: ")
+def add_contact():
+    # Clear message label
+    message_label.config(text="")
 
-    while True:
-        confirmAdd = input(f"Add {name}? (Y/N) ").upper()
-        if confirmAdd == 'Y':
-            contacts.append({"name": name, "location": location, "age": age})
-            print("Contact added successfully.")
-            break
-        elif confirmAdd == 'N':
-            print("Add Contact cancelled.")
-            break
-        else:
-            print("Invalid input, please select (Y/N) ")
+# Fetch data from Entry widgets
+    name = name_entry.get()
+    location = location_entry.get()
+    age = age_entry.get()
 
-# Button to add a contact
+    # Validate input no empty fields
+    if not name or not location or not age:
+        message_label.config(text="Error: All fields must be filled out!", fg="red")
+        return
+
+    # Update message and show confirm button
+    message_label.config(text=f"Add {name}? Click Confirm to proceed.", fg="black")
+    confirm_button.grid(row=4, column=1, pady=10) # confirm button visible
+    cancel_button.grid(row=4, column=2, pady=10) # cancel button visible
+
+    # Confirmation
+def confirm_addition():
+    name = name_entry.get()
+    location = location_entry.get()
+    age = age_entry.get()
+    contacts.append({"name": name, "location": location, "age": age})
+    message_label.config(text="Contact added successfully!", fg="green")
+    clear_entries()
+    display_contacts()  # Update the display of contacts
+
+def cancel_addition():
+    message_label.config(text="Add Contact cancelled.", fg="blue")
+    clear_entries()
+
+def clear_entries():
+    name_entry.delete(0, tk.END)
+    location_entry.delete(0, tk.END)
+    age_entry.delete(0, tk.END)
+    confirm_button.grid_remove()
+    cancel_button.grid_remove()
+
+# Entry widgets and their labels
+name_entry = tk.Entry(root)
+name_entry.grid(row=0, column=1, padx=10)
+location_entry = tk.Entry(root)
+location_entry.grid(row=1, column=1, padx=10)
+age_entry = tk.Entry(root)
+age_entry.grid(row=2, column=1, padx=10)
+
+tk.Label(root, text="Name:").grid(row=0, column=0)
+tk.Label(root, text="Location:").grid(row=1, column=0)
+tk.Label(root, text="Age:").grid(row=2, column=0)
+
+# Message label for feedback
+message_label = tk.Label(root, text="")
+message_label.grid(row=3, column=0, columnspan=2)
+
+# Buttons
 add_button = tk.Button(root, text="Add Contact", command=add_contact)
-add_button.pack(pady=10)
+add_button.grid(row=3, column=2)
+
+confirm_button = tk.Button(root, text="Confirm", command=confirm_addition)
+cancel_button = tk.Button(root, text="Cancel", command=cancel_addition)
 
 def main():
     while True:
         print("\n")
         print('Contacts: \n')
-        display_contacts(contacts)
+        display_contacts()
         print("\n")
 
         option = display_menu()
@@ -129,4 +173,5 @@ def main():
 if __name__ == '__main__':
     main()
 
+display_contacts()
 root.mainloop()
