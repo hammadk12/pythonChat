@@ -1,20 +1,16 @@
 import re
-from tkinter import *
+import tkinter as tk
+from tkinter import messagebox, simpledialog
 
-root = Tk()
+root = tk.Tk()
+root.title("Contacts")
+root.geometry("500x300")
 
-e = Entry(root, width=50)
-e.pack()
+text_widget = tk.Text(root, height=5, width=50)
+text_widget.pack(pady=20)
 
-def myClick():
-    hello = "Hello " + e.get()
-    myLabel = Label(root, text=hello)
-    myLabel.pack()
+text_widget.insert(tk.END, "This is contact list widget. \nYou can edit your contact list as you wish.")
 
-myButton = Button(root, text="Enter Name", command=myClick)
-myButton.pack()
-
-root.mainloop()
 
 # original contacts list
 contacts = []
@@ -62,6 +58,10 @@ def delete_contact(contacts):
         print("No contact found with that name.")
         delete_contact(contacts)
 
+# Button to delete contact
+delete_button = tk.Button(root, text="Delete Contact", command=delete_contact, state=tk.DISABLED)
+delete_button.pack(pady=10)
+
 # displays start menu
 def display_menu():
     print('1. Add Contact')
@@ -99,6 +99,10 @@ def add_contact(contacts):
         else:
             print("Invalid input, please select (Y/N) ")
 
+# Button to add a contact
+add_button = tk.Button(root, text="Add Contact", command=add_contact)
+add_button.pack(pady=10)
+
 def main():
     while True:
         print("\n")
@@ -119,6 +123,10 @@ def main():
         if input("Continue? (Y/N) ").upper() != 'Y':
             break
 
+# Main Display
+
+
 if __name__ == '__main__':
     main()
 
+root.mainloop()
