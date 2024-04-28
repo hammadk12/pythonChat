@@ -7,7 +7,9 @@ root.title("Contacts")
 root.geometry("500x300")
 
 # original contacts list
-contacts = []
+contacts = [
+    {"name": "Hammad", "location": "FL", "age": 19}
+]
 
 # returns contact name if it matches contact list
 def get_matched_name(contacts, name_input):
@@ -34,35 +36,42 @@ def get_contact_name():
     return input("Enter contact name: ")
 
 # delete contact function
-def delete_contact(contacts):
-    if not contacts:
-        print("No contacts available to delete.")
+def delete_contact():
+    message_label.config(text="Enter correct contact information")
+    name = name_entry.get()
+    location = location_entry.get()
+    age = age_entry.get()
+
+    # Validate input no empty fields
+    if not name or not location or not age:
+        message_label.config(text="All fields must be filled out!", fg="red")
         return
-    
-    name_input = input("Enter contact name to delete: ")
-    matched_contacts = get_matched_name(contacts, name_input)
-    
-    if matched_contacts:
-        for contact in matched_contacts:
-            while True:
-                user_input = input(f"Delete {contact['name']}? (Y/N) ").upper()
-                if user_input == 'Y':
-                    contacts.remove(contact)
-                    print("Contact deleted successfully.")
-                    break
-                elif user_input == 'N':
-                    print("Deletion cancelled.")
-                    break
-                else:
-                    print("Invalid input, please select (Y/N) ")
-                
     else:
-        print("No contact found with that name.")
-        delete_contact(contacts)
+        confirm_deletion()
+
+# checking if name is in contacts list
+names_in_contacts = [contact['name'] for contact in contacts]
+
+def confirm_deletion():
+    if name_entry in names_in_contacts:
+        for contact in contacts:
+            if (contact['name'] == name_entry):
+                name = name_entry.get()
+                location = location_entry.get()
+                age = age_entry.get()
+                contacts.remove({"name": name, "location": location, "age": age})
+                message_label.config(text="Contact deleted successfully!", fg="green")
+                clear_entries()
+                display_contacts()  # Update the display of contacts
+            else:
+                message_label.config(text="No matching contact information found. Please try again.")
 
 # Button to delete contact
-delete_button = tk.Button(root, text="Delete Contact", command=delete_contact, state=tk.DISABLED)
+delete_button = tk.Button(root, text="Delete Contact", command=delete_contact)
+delete_button.grid(row=3, column=3)
 
+confirm_button = tk.Button(root, text="Confirm", command=confirm_deletion)
+#cancel_button = tk.Button(root, text="Cancel", command=canel_deletion)
 
 # displays start menu
 def display_menu():
